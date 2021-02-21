@@ -1,0 +1,126 @@
+options {
+ LOOKAHEAD = 2;
+}
+
+PARSER_BEGIN(Calculator)
+
+package w1_JavaCCTutorial.e33;
+
+import java.io.IOException;
+
+public class Calculator {
+    public static void main(String[] args) throws ParseException {
+        System.out.println("Parser for a calculator that accepts expressions with integers, +,-,*,/,(, and ).");
+        System.out.println("Write an arithmetic expression: ");
+        Calculator myCalc = new Calculator(System.in);
+        SimpleNode root = myCalc.Expression(); // returns reference to root node
+
+        root.dump(""); // prints the tree on the screen
+        // skip assignment expressions
+        SimpleNode node;
+        try {
+            node = myCalc.expressionRoot(root);
+        System.out.println("Expression value: "+myCalc.eval(node));
+        } catch (Exception e) {
+            System.out.println("Can't find expression");
+        }
+    }
+
+    int eval(SimpleNode node) {
+        if (node.jjtGetNumChildren() == 0) // leaf node with integer value
+            return node.val;
+        else if (node.jjtGetNumChildren() == 1) // only one child
+            return this.eval((SimpleNode) node.jjtGetChild(0));
+
+        SimpleNode lhs = (SimpleNode) node.jjtGetChild(0); //left child
+        SimpleNode rhs = (SimpleNode) node.jjtGetChild(1); // right child
+        switch(node.id) {
+            case CalculatorTreeConstants.JJTADD : return eval( lhs ) + eval( rhs );
+            case CalculatorTreeConstants.JJTSUB : return eval( lhs ) - eval( rhs );
+            case CalculatorTreeConstants.JJTMUL : return eval( lhs ) * eval( rhs );
+            case CalculatorTreeConstants.JJTDIV : return eval( lhs ) / eval( rhs );
+            default : // abort
+                System.out.println("Ilegal operator!");
+                System.exit(1);
+        }
+        return 0;
+    }
+
+    SimpleNode expressionRoot(SimpleNode treeRoot) throws IOException {
+        if (treeRoot.id == CalculatorTreeConstants.JJTEXPR)
+            return treeRoot;
+
+        if (treeRoot.children.length == 0)
+            throw new IOException("Not an expression");
+
+        if (treeRoot.children.length == 1)
+            return expressionRoot( (SimpleNode) treeRoot.children[0]);
+
+        SimpleNode lhs = (SimpleNode) treeRoot.jjtGetChild(0); // left child
+        SimpleNode rhs = (SimpleNode) treeRoot.jjtGetChild(1); // right child
+
+        try {
+            return expressionRoot(lhs);
+        } catch (Exception e) {
+            return expressionRoot(rhs);
+        }
+
+    }
+}
+PARSER_END(Calculator)
+
+SKIP:
+{
+    " " | "\r" | "\t"
+}
+
+TOKEN:
+{
+    < INTEGER: (["0"-"9"])+ >
+    | < SYMBOL: ["A"-"Z", "a"-"z"](["0"-"9", "A"-"Z", "a"-"z"])* >
+    | < ASSIGN: "=" >
+    | < ADD: "+" >
+    | < SUB: "-" >
+    | < MUL: "*" >
+    | < DIV: "/" >
+    | < LF: "\n" >
+    | < ENDL: ";" >
+}
+
+SimpleNode Expression(): {}
+{
+    AssignCalc() <LF> {return jjtThis;} // Java code inside brackets
+}
+
+void AssignCalc() #AssignCalc: {}
+{
+    Assign() AssignCalc() | Account()
+}
+
+void Assign() #Assign: {Token var, number; int sign = 1;}
+{
+    var = <SYMBOL> <ASSIGN> ("-" {sign = -1;})? number = <INTEGER> {CalculatorMemory.add(var.image, sign * Integer.parseInt(number.image));} <ENDL> (<LF>)?
+}
+
+void Account(): {}
+{
+    Expr1(1) <ENDL>
+}
+
+void Expr1(int sign) #Expr: {}
+{
+    Expr2(sign) (<ADD> Expr2(sign) #Add(2) | <SUB> Expr2(sign) #Sub(2))*
+}
+
+void Expr2(int sign) #void: {}
+{
+    Expr3(sign) (<MUL> Expr3(sign) #Mul(2) | <DIV> Expr3(sign) #Div(2))*
+}
+
+void Expr3(int sign) #void: {Token t;}
+{
+    t = <INTEGER> {jjtThis.val = sign * Integer.parseInt(t.image);} #Term
+    | t = <SYMBOL> {jjtThis.val = sign * CalculatorMemory.get(t.image);} #Term
+    | "-" Expr3(-1)
+    | "(" Expr1(sign) ")"
+}
