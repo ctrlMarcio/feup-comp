@@ -40,7 +40,7 @@ public class Calculator {
             case CalculatorTreeConstants.JJTMUL : return eval( lhs ) * eval( rhs );
             case CalculatorTreeConstants.JJTDIV : return eval( lhs ) / eval( rhs );
             default : // abort
-                System.out.println("Ilegal operator!");
+                System.out.println("Illegal operator!");
                 System.exit(1);
         }
         return 0;
@@ -92,15 +92,18 @@ SimpleNode Expression(): {}
     AssignCalc() <LF> {return jjtThis;} // Java code inside brackets
 }
 
-void AssignCalc() #AssignCalc: {}
+void AssignCalc(): {}
 {
     Assign() AssignCalc() | Expr1()
 }
 
 // IMP: negative variables are solved in the next exercise, oopsie i forgot aboutem
-void Assign() #Assign: {Token var, number;}
+void Assign(): {Token var, number;}
 {
-    var = <SYMBOL> <ASSIGN> number = <INTEGER> {CalculatorMemory.add(var.image, Integer.parseInt(number.image));} <ENDL> (<LF>)?
+    var = <SYMBOL> {jjtThis.image = var.image;} #Symbol
+    <ASSIGN>
+    number = <INTEGER> {CalculatorMemory.add(var.image, Integer.parseInt(number.image)); jjtThis.image = number.image;} #Integer
+    <ENDL> (<LF>)?
 }
 
 void Expr1() #Expr: {}

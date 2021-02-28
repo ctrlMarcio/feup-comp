@@ -1,3 +1,30 @@
 # IntellIJ
 .idea
 *.iml
+
+# Built files
+/src/w1_JavaCCTutorial/**/Node.class
+/src/w1_JavaCCTutorial/**/TokenMgrError.java
+/src/w1_JavaCCTutorial/**/SimpleCharStream.class
+/src/w1_JavaCCTutorial/**/Calculator$LookaheadSuccess.class
+/src/w1_JavaCCTutorial/**/CalculatorTreeConstants.class
+/src/w1_JavaCCTutorial/**/SimpleCharStream.java
+/src/w1_JavaCCTutorial/**/JJTCalculatorState.class
+/src/w1_JavaCCTutorial/**/TokenMgrError.class
+/src/w1_JavaCCTutorial/**/CalculatorTreeConstants.java
+/src/w1_JavaCCTutorial/**/Node.java
+/src/w1_JavaCCTutorial/**/CalculatorConstants.class
+/src/w1_JavaCCTutorial/**/CalculatorConstants.java
+/src/w1_JavaCCTutorial/**/ParseException.class
+/src/w1_JavaCCTutorial/**/calculator.jj
+/src/w1_JavaCCTutorial/**/Calculator.class
+/src/w1_JavaCCTutorial/**/JJTCalculatorState.java
+/src/w1_JavaCCTutorial/**/ParseException.java
+/src/w1_JavaCCTutorial/**/CalculatorTokenManager.class
+/src/w1_JavaCCTutorial/**/CalculatorMemory.class
+/src/w1_JavaCCTutorial/**/Token.class
+/src/w1_JavaCCTutorial/**/Calculator$JJCalls.class
+/src/w1_JavaCCTutorial/**/Calculator.java
+/src/w1_JavaCCTutorial/**/CalculatorTokenManager.java
+/src/w1_JavaCCTutorial/**/SimpleNode.class
+/src/w1_JavaCCTutorial/**/Token.java

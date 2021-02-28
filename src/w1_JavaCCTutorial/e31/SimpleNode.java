@@ -7,6 +7,7 @@ import w1_JavaCCTutorial.e31.Node;
 public class SimpleNode implements Node {
     // edited code
     public int val;
+    public String image;
     // end of edited code
 
     protected Node parent;
@@ -98,6 +99,13 @@ public class SimpleNode implements Node {
                 break;
             case CalculatorTreeConstants.JJTDIV:
                 System.out.println("\t[ / ]");
+                break;
+            case CalculatorTreeConstants.JJTSYMBOL:
+            case CalculatorTreeConstants.JJTINTEGER:
+                System.out.println("\t[ " + this.image + " ]");
+                break;
+            case CalculatorTreeConstants.JJTTERM:
+                System.out.println("\t[ " + this.val + " ]");
                 break;
         }
         // end of edited code

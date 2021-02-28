@@ -92,17 +92,20 @@ SimpleNode Expression(): {}
     AssignCalc() <LF> {return jjtThis;} // Java code inside brackets
 }
 
-void AssignCalc() #AssignCalc: {}
+void AssignCalc(): {}
 {
     Assign() AssignCalc() | Account()
 }
 
-void Assign() #Assign: {Token var, number; int sign = 1;}
+void Assign(): {Token var, number; int sign = 1;}
 {
-    var = <SYMBOL> <ASSIGN> ("-" {sign = -1;})? number = <INTEGER> {CalculatorMemory.add(var.image, sign * Integer.parseInt(number.image));} <ENDL> (<LF>)?
+    var = <SYMBOL> {jjtThis.image = var.image;} #Symbol
+    <ASSIGN>
+    ("-" {sign = -1;})? number = <INTEGER> {CalculatorMemory.add(var.image, sign * Integer.parseInt(number.image)); jjtThis.image = number.image;} #Integer
+    <ENDL> (<LF>)?
 }
 
-void Account(): {}
+void Account() #void: {}
 {
     Expr1(1) <ENDL>
 }
